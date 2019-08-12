@@ -10,7 +10,7 @@ def call(body)
 	node("${buildNode}"){
 		stage("Checkout"){
 		 //git branch: 'master', credentialsId: 'GitHub-Authentication', url: 'https://github.com/akumarvinay/SimpleWebApplication.git'
-		 cleanWS()
+		 step([$class: 'WsCleanup'])
 		 checkout scm
 		}
 		def M3_HOME = tool 'M3_HOME'
