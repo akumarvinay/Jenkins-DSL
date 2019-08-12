@@ -21,14 +21,15 @@ def call(body)
 		}
 		stage("DockerBuild")
 		{
-			docker.withTool("docker")
-		   	{
-				sh """
-				echo $USER
-				docker images
-				"""
-				base = docker.build("akumarvinay/${applicationName}:${BUILD_NUMBER}")
-				sh "docker images"
+			docker.withRegistry("dockerhub")
+			{
+				docker.withTool("docker")
+		   		{
+					def base = docker.build("akumarvinay/${applicationName}")
+					sh "docker images"
+					base.push("${BUILD_NUMBER}")
+					
+				}
 		 
 			}
 		}
