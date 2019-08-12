@@ -21,7 +21,7 @@ def call(body)
 		}
 		stage("DockerBuild")
 		{
-			docker.withRegistry('', DockerCred)
+			docker.withRegistry('', 'DockerCred')
 			{
 				docker.withTool("docker")
 		   		{
