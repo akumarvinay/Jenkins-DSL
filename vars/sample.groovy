@@ -25,7 +25,7 @@ def call(body)
 		   	{
 				sh """
 				echo $USER
-				#docker images
+				docker images
 				"""
 				base = docker.build("akumarvinay/${applicationName}:${BUILD_NUMBER}")
 				sh "docker images"
