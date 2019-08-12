@@ -5,13 +5,19 @@ def call(body)
         body.delegate = config
         body()
         def applicationName = config.applicationName ?: 'SAMPLE'
-	node()
-	{
-		stage("sample")
+	def buildNode = config.buildNode
+	def mvnGoals = config.mvnGoals
+	node("${buildNode}"){
+		stage("Checkout"){
+		 //git branch: 'master', credentialsId: 'GitHub-Authentication', url: 'https://github.com/akumarvinay/SimpleWebApplication.git'
+		 checkout scm
+		}
+		def M3_HOME = tool 'M3_HOME'
+		stage("Build")
 		{
-		 sh """
-			echo "${applicationName} is This"
-                    """
+		   sh """
+		   ${M3_HOME}/bin/mvn ${mvnGoals}
+		   """
 		}
 	}
 }
