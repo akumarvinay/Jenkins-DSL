@@ -24,6 +24,7 @@ def call(body)
 			docker.withTool("docker")
 		   	{
 				sh """
+				echo $USER
 				docker images
 				"""
 				base = docker.build("akumarvinay/${applicationName}:${BUILD_NUMBER}")
