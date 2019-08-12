@@ -15,9 +15,22 @@ def call(body)
 		def M3_HOME = tool 'M3_HOME'
 		stage("Build")
 		{
-		   sh """
-		   ${M3_HOME}/bin/mvn ${mvnGoals}
-		   """
+			sh """
+		   	${M3_HOME}/bin/mvn ${mvnGoals}
+		   	"""
+		}
+		stage("DockerBuild")
+		{
+			docker.withTool("docker")
+		   	{
+				sh """
+				docker images
+				docker rmi -f ${applicationName}
+				"""
+				base = docker.build("akumarvinay/${applicationName}:${BUILD_NUMBER}")
+				sh "docker images"
+		 
+			}
 		}
 	}
 }
