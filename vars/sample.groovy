@@ -25,7 +25,6 @@ def call(body)
 		   	{
 				sh """
 				docker images
-				docker rmi -f ${applicationName}
 				"""
 				base = docker.build("akumarvinay/${applicationName}:${BUILD_NUMBER}")
 				sh "docker images"
