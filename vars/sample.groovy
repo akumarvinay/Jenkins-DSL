@@ -5,7 +5,7 @@ def call(body)
         body.delegate = config
         body()
         def applicationName = config.applicationName ?: 'SAMPLE'
-	def buildNode = config.buildNode
+	def buildNode = config.buildNode ?: 'master'
 	def mvnGoals = config.mvnGoals
 	node("${buildNode}"){
 		stage("Checkout"){
