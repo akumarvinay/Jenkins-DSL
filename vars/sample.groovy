@@ -20,6 +20,14 @@ def call(body)
 		   	${M3_HOME}/bin/mvn ${mvnGoals}
 		   	"""
 		}
+		def SONAR_TOOL = tool 'SonarScanner'
+		stage("Sonar Scan")
+		{
+			withSonarQubeEnv('SONAR_POC') 
+			{ // If you have configured more than one global server connection, you can specify its name
+      			sh '${M3_HOME}/bin/mvn clean package sonar:sonar'
+    		}
+		}
 		stage("DockerBuild")
 		{
 			docker.withRegistry('', 'DockerCred')
@@ -28,8 +36,7 @@ def call(body)
 		   		{
 					def base = docker.build("akumarvinay/${applicationName}")
 					sh "docker images"
-					base.push("${BUILD_NUMBER}")
-					
+					base.push("${BUILD_NUMBER}")					
 				}
 		 
 			}
