@@ -26,7 +26,11 @@ def call(body)
 			withSonarQubeEnv('SONAR_POC') 
 			{ // If you have configured more than one global server connection, you can specify its name
       			sh """
-				  ${M3_HOME}/bin/mvn clean package sonar:sonar
+				  ${SONAR_TOOL}/bin/sonarscanner -Dsonar.projectKey=myproject,
+				  -Dsonar.projectName=myfirstApp,
+				  -Dsonar.projectVersion=1.0,
+				  -Dsonar.sources=src
+				  -Dsonar.language=java
 				"""
     		}
 		}
