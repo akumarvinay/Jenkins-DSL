@@ -26,10 +26,10 @@ def call(body)
 			withSonarQubeEnv('SONAR_POC') 
 			{ // If you have configured more than one global server connection, you can specify its name
       			sh """
-				  ${SONAR_TOOL}/bin/sonar-scanner -Dsonar.projectKey=myproject 
-				  -Dsonar.sources=src -Dsonar.projectName=myfirstApp
-				  -Dsonar.projectVersion=1.0
-				  -Dsonar.sources=src
+				  ${SONAR_TOOL}/bin/sonar-scanner -Dsonar.projectKey=myproject /
+				  -Dsonar.sources=src -Dsonar.projectName=myfirstApp /
+				  -Dsonar.projectVersion=1.0 /
+				  -Dsonar.sources=src /
 				  -Dsonar.language=java
 			"""
     			}
