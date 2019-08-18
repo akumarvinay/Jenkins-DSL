@@ -25,7 +25,9 @@ def call(body)
 		{
 			withSonarQubeEnv('SONAR_POC') 
 			{ // If you have configured more than one global server connection, you can specify its name
-      			sh '${M3_HOME}/bin/mvn clean package sonar:sonar'
+      			sh """
+				  ${M3_HOME}/bin/mvn clean package sonar:sonar
+				"""
     		}
 		}
 		stage("DockerBuild")
