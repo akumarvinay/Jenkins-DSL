@@ -34,7 +34,7 @@ def call(body)
 			"""
     			}
 		}
-		stage("DockerBuild")
+		stage("DockerBuild and Publish")
 		{
 			docker.withRegistry('', 'DockerCred')
 			{
