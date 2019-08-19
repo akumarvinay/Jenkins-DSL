@@ -47,5 +47,14 @@ def call(body)
 		 
 			}
 		}
+		stage("Kubernetes Deployment")
+		{
+        		// https://jenkins.io/doc/book/pipeline/docker/
+        		docker.image('ubuntu').inside
+        		{
+            			kubernetesDeploy configs: '*.yml', kubeConfig: [path: ''], kubeconfigId: 'KubeAuthentication', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+        		}
+    		}
+		
 	}
 }
