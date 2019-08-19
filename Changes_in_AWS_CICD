@@ -1,0 +1,5 @@
+1. Start sonar server
+2. Update Sonar server in Jenkins
+3. Start docker service in Jenkins master.
+4. Update githook in github url (Jenkins URL)
+5 Cross check kuberetes cluster status
