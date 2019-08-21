@@ -20,10 +20,19 @@ def call(body)
 		   	${M3_HOME}/bin/mvn ${mvnGoals}
 		   	"""
 		}
-		def SONAR_TOOL = tool 'SonarScanner'
+		// def SONAR_TOOL = tool 'SonarScanner'
 		stage("Sonar Scan")
 		{
-			withSonarQubeEnv('SONAR_POC') 
+			sonarscan 
+			{
+				applicationName = 'tomcat-application'
+				projectName = 'myfirstApp'
+    	        projectKey = 'myproject'
+    			projectVersion = '1.0'
+    			sonarLanguage = 'java'
+    			sonarSources = 'src'
+			}
+			/* withSonarQubeEnv('SONAR_POC') 
 			{ // If you have configured more than one global server connection, you can specify its name
       			sh """
 				  ${SONAR_TOOL}/bin/sonar-scanner -Dsonar.projectKey=myproject \
@@ -32,7 +41,7 @@ def call(body)
 				  -Dsonar.sources=src \
 				  -Dsonar.language=java
 			"""
-    			}
+    			} */
 		}
 		stage("Sonar QualityGate Check")
 		{
