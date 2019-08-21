@@ -2,16 +2,17 @@ def call(body)
 {
 	def config = [:]
 	body.resolveStrategy = Closure.DELEGATE_FIRST
-        body.delegate = config
-        body()
-        def applicationName = config.applicationName ?: 'SAMPLE'
+    body.delegate = config
+    body()
+    def applicationName = config.applicationName ?: 'SAMPLE'
 	def buildNode = config.buildNode ?: 'master'
 	def mvnGoals = config.mvnGoals
 	node("${buildNode}"){
-		stage("Checkout"){
+		stage("Checkout")
+		{
 		 //git branch: 'master', credentialsId: 'GitHub-Authentication', url: 'https://github.com/akumarvinay/SimpleWebApplication.git'
-		 step([$class: 'WsCleanup'])
-		 checkout scm
+			step([$class: 'WsCleanup'])
+			checkout scm
 		}
 		def M3_HOME = tool 'M3_HOME'
 		stage("Build")
@@ -32,16 +33,6 @@ def call(body)
     			sonarLanguage = 'java'
     			sonarSources = 'src'
 			}
-			/* withSonarQubeEnv('SONAR_POC') 
-			{ // If you have configured more than one global server connection, you can specify its name
-      			sh """
-				  ${SONAR_TOOL}/bin/sonar-scanner -Dsonar.projectKey=myproject \
-				  -Dsonar.sources=src -Dsonar.projectName=myfirstApp \
-				  -Dsonar.projectVersion=1.0 \
-				  -Dsonar.sources=src \
-				  -Dsonar.language=java
-			"""
-    			} */
 		}
 		stage("Sonar QualityGate Check")
 		{
@@ -67,16 +58,33 @@ def call(body)
 		 
 			}
 		}
-		stage("Kubernetes Deployment")
-		{
-			    input id: 'UserInput', message: 'Is OK to proceed', ok: 'Deploy to Prod', submitter: 'admin'
-        		// https://jenkins.io/doc/book/pipeline/docker/
-        		docker.image('ubuntu').inside
-        		{
-            			kubernetesDeploy configs: '*.yml', kubeConfig: [path: ''], kubeconfigId: 'KubeAuthentication', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
-        		}
+		stage("Kubernetes deployment to Stage/Dev")
+		{			    
+        	// https://jenkins.io/doc/book/pipeline/docker/
+        	docker.image('ubuntu').inside
+        	{
+            	//kubernetesDeploy configs: '*.yml', kubeConfig: [path: ''], kubeconfigId: 'KubeAuthentication', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+        	}
     	}
+		stage("Automation TestSuites Execution")
+		{
+			sh """
+				echo "Invoking Automation test case execution"
+			"""
+		}
+		if (env.BRANCH_NAME == 'master')
+	    {
+			stage("Manual Deploy Validation")
+			{
+				timeout(time: 1, unit: 'HOURS') 
+				{
+					input id: 'UserInput', message: 'Is OK to proceed', ok: 'Deploy to Prod', submitter: 'akumarvinay@gmail.com'
+				}
+			}	
+			stage("Prod Deployment")
+			{
 
-		
+			}
+		}
 	}
 }
