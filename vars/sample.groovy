@@ -69,12 +69,14 @@ def call(body)
 		}
 		stage("Kubernetes Deployment")
 		{
+			    input id: 'UserInput', message: 'Is OK to proceed', ok: 'Deploy to Prod', submitter: 'admin'
         		// https://jenkins.io/doc/book/pipeline/docker/
         		docker.image('ubuntu').inside
         		{
             			kubernetesDeploy configs: '*.yml', kubeConfig: [path: ''], kubeconfigId: 'KubeAuthentication', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
         		}
-    		}
+    	}
+
 		
 	}
 }
