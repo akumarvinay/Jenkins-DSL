@@ -69,7 +69,7 @@ def call(body)
 		}
 		stage("Kubernetes Deployment")
 		{
-			    input id: 'UserInput', message: 'Is OK to proceed', ok: 'Deploy to Prod', submitter: 'admin'
+			    input id: 'UserInput', message: 'Is OK to proceed', ok: 'Deploy to Prod', submitter: 'xyz'
         		// https://jenkins.io/doc/book/pipeline/docker/
         		docker.image('ubuntu').inside
         		{
