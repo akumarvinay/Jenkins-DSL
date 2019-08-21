@@ -73,7 +73,8 @@ def call(body)
 			"""
 		}
 		def branch = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
-		if (branch == 'master')
+		echo ${branch}
+		if (${branch} == 'master')
 	         {
 			stage("Manual Deploy Validation")
 			{
