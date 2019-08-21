@@ -53,7 +53,7 @@ def call(body)
 		   		{
 					def base = docker.build("akumarvinay/${applicationName}")
 					sh "docker images"
-					base.push("${BUILD_NUMBER}")					
+					//base.push("${BUILD_NUMBER}")					
 				}
 		 
 			}
@@ -73,8 +73,8 @@ def call(body)
 			"""
 		}
 		def branch = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
-		echo ${branch}
-		if (${branch} == 'master')
+		echo branch
+		if (branch == 'master')
 	         {
 			stage("Manual Deploy Validation")
 			{
