@@ -72,8 +72,9 @@ def call(body)
 				echo "Invoking Automation test case execution"
 			"""
 		}
-		if (env.BRANCH_NAME == 'master')
-	    {
+		def branch = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+		if (branch == 'master')
+	         {
 			stage("Manual Deploy Validation")
 			{
 				timeout(time: 1, unit: 'HOURS') 
