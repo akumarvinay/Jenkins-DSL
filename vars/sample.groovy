@@ -34,6 +34,17 @@ def call(body)
 			"""
     			}
 		}
+		stage("Sonar QualityGate Check")
+		{
+			timeout(time: 1, unit: 'HOURS')
+			{
+				def qualityGate = waitForQualityGate()
+				if (qualityGate.status != 'OK')
+				{
+					error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+				}
+			}
+		}
 		stage("DockerBuild and Publish")
 		{
 			docker.withRegistry('', 'DockerCred')
