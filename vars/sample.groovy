@@ -72,7 +72,7 @@ def call(body)
 				echo "Invoking Automation test case execution"
 			"""
 		}
-		def branch = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+		def branch = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD')
 		echo branch
 		if (branch == 'master')
 	         {
