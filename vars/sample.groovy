@@ -7,86 +7,105 @@ def call(body)
     def applicationName = config.applicationName ?: 'SAMPLE'
 	def buildNode = config.buildNode ?: 'master'
 	def mvnGoals = config.mvnGoals
+	currentBuild.result = 'SUCCESS'
 	node("${buildNode}"){
-		stage("Checkout")
+		try
 		{
-		 //git branch: 'master', credentialsId: 'GitHub-Authentication', url: 'https://github.com/akumarvinay/SimpleWebApplication.git'
-			step([$class: 'WsCleanup'])
-			checkout scm
-		}
-		def M3_HOME = tool 'M3_HOME'
-		stage("Build")
-		{
-			sh """
-		   	${M3_HOME}/bin/mvn ${mvnGoals}
-		   	"""
-			jacoco()
-			junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: 'target/surefire-reports/*.xml'
-		}
-		// def SONAR_TOOL = tool 'SonarScanner'
-		stage("Sonar Scan")
-		{
-			sonarscan 
+			stage("Checkout")
 			{
-				applicationName = 'tomcat-application'
-				projectName = 'myfirstApp'
-    	        projectKey = 'myproject'
-    			projectVersion = '1.0'
-    			sonarLanguage = 'java'
-    			sonarSources = 'src'
+			//git branch: 'master', credentialsId: 'GitHub-Authentication', url: 'https://github.com/akumarvinay/SimpleWebApplication.git'
+				step([$class: 'WsCleanup'])
+				checkout scm
 			}
-		}
-		stage("Sonar QualityGate Check")
-		{
-			timeout(time: 1, unit: 'HOURS')
+			def M3_HOME = tool 'M3_HOME'
+			stage("Build")
 			{
-				def qualityGate = waitForQualityGate()
-				if (qualityGate.status != 'OK')
+				sh """
+				${M3_HOME}/bin/mvn ${mvnGoals}
+				"""
+				jacoco()
+				junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: 'target/surefire-reports/*.xml'
+			}
+			// def SONAR_TOOL = tool 'SonarScanner'
+			stage("Sonar Scan")
+			{
+				sonarscan 
 				{
-					error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+					applicationName = 'tomcat-application'
+					projectName = 'myfirstApp'
+					projectKey = 'myproject'
+					projectVersion = '1.0'
+					sonarLanguage = 'java'
+					sonarSources = 'src'
 				}
 			}
-		}
-		stage("DockerBuild and Publish")
-		{
-			applicationName = config.applicationName
-			docker.withRegistry('', 'DockerCred')
+			stage("Sonar QualityGate Check")
 			{
-				docker.withTool("docker")
-		   		{
-					def base = docker.build("akumarvinay/${applicationName}")
-					sh "docker images"
-					base.push("${BUILD_NUMBER}")					
-				}
-		 
-			}
-		}
-		stage("Kubernetes deployment to Stage/Dev")
-		{			    
-        	// https://jenkins.io/doc/book/pipeline/docker/
-        	docker.image('ubuntu').inside
-        	{
-            		kubernetesDeploy configs: '*.yml', kubeConfig: [path: ''], kubeconfigId: 'KubeAuthentication', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
-        	}
-    	}
-		stage("Automation TestSuites Execution")
-		{
-			sh """
-				echo "Invoking Automation test case execution"
-			"""
-		}
-		if ("${BRANCH_NAME}" == 'master')
-	         {
-			stage("Manual Deploy Validation")
-			{
-				timeout(time: 1, unit: 'HOURS') 
+				timeout(time: 1, unit: 'HOURS')
 				{
-					input id: 'UserInput', message: 'Is OK to proceed', ok: 'Deploy to Prod', submitter: 'akumarvinay@gmail.com'
+					def qualityGate = waitForQualityGate()
+					if (qualityGate.status != 'OK')
+					{
+						error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+					}
 				}
-			}	
-			stage("Prod Deployment")
+			}
+			stage("DockerBuild and Publish")
 			{
+				applicationName = config.applicationName
+				docker.withRegistry('', 'DockerCred')
+				{
+					docker.withTool("docker")
+					{
+						def base = docker.build("akumarvinay/${applicationName}")
+						sh "docker images"
+						base.push("${BUILD_NUMBER}")					
+					}
+			
+				}
+			}
+			stage("Kubernetes deployment to Stage/Dev")
+			{			    
+				// https://jenkins.io/doc/book/pipeline/docker/
+				docker.image('ubuntu').inside
+				{
+						kubernetesDeploy configs: '*.yml', kubeConfig: [path: ''], kubeconfigId: 'KubeAuthentication', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+				}
+			}
+			stage("Automation TestSuites Execution")
+			{
+				sh """
+					echo "Invoking Automation test case execution"
+				"""
+			}
+			if ("${BRANCH_NAME}" == 'master')
+				{
+				stage("Manual Deploy Validation")
+				{
+					timeout(time: 1, unit: 'HOURS') 
+					{
+						input id: 'UserInput', message: 'Is OK to proceed', ok: 'Deploy to Prod', submitter: 'akumarvinay@gmail.com'
+					}
+				}	
+				stage("Prod Deployment")
+				{
 
+				}
+			}
+		}
+		catch()
+		{			
+            echo 'Something failed, I should sound the klaxons!'
+			currentBuild.result = 'FAILURE'
+            throw
+		}
+		finally
+		{
+			stage("Email Notification")
+			{
+				sh """
+				 echo "RESULT: ${currentBuild.result}"
+				"""
 			}
 		}
 	}
