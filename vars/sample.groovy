@@ -97,7 +97,6 @@ def call(body)
 		{			
             		echo 'Something failed, I should sound the klaxons!'
 			currentBuild.result = 'FAILURE'
-            		throw
 		}
 		finally
 		{
