@@ -19,7 +19,6 @@ def call(body)
 		{
 			sh """
 		   	${M3_HOME}/bin/mvn ${mvnGoals}
-			echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 		   	"""
 			jacoco()
 			junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: 'target/surefire-reports/*.xml'
@@ -76,9 +75,7 @@ def call(body)
 				echo "Invoking Automation test case execution"
 			"""
 		}
-		def branch = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD')
-		echo branch
-		if (branch == 'master')
+		if ("${BRANCH_NAME}" == 'master')
 	         {
 			stage("Manual Deploy Validation")
 			{
