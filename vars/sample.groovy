@@ -53,7 +53,7 @@ def call(body)
 			{
 				docker.withTool("docker")
 		   		{
-					def base = docker.build("tomcat-application-${BUILD_NUMBER}")
+					def base = docker.build("${applicationName}")
 					sh "docker images"
 					base.push("${BUILD_NUMBER}")					
 				}
