@@ -55,7 +55,7 @@ def call(body)
 			{
 				docker.withTool("docker")
 		   		{
-					def base = docker.build("${applicationName}")
+					def base = docker.build("akumarvinay/${applicationName}")
 					sh "docker images"
 					base.push("${BUILD_NUMBER}")					
 				}
