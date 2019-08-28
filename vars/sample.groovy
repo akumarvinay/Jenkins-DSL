@@ -19,6 +19,7 @@ def call(body)
 		{
 			sh """
 		   	${M3_HOME}/bin/mvn ${mvnGoals}
+			echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 		   	"""
 			jacoco()
 			junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: 'target/surefire-reports/*.xml'
