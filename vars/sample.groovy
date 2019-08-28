@@ -20,6 +20,8 @@ def call(body)
 			sh """
 		   	${M3_HOME}/bin/mvn ${mvnGoals}
 		   	"""
+			jacoco()
+			junit '/target/surefire-reports/*.xml'
 		}
 		// def SONAR_TOOL = tool 'SonarScanner'
 		stage("Sonar Scan")
