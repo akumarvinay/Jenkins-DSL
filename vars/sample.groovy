@@ -23,7 +23,7 @@ def call(body)
 				if ("${BRANCH_NAME}" == 'master')
 				{
 					sh """
-						${M3_HOME}/bin/mvn ${mvnGoals}
+						${M3_HOME}/bin/mvn clean install
 					"""
 					jacoco()
 					junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: 'target/surefire-reports/*.xml'
@@ -31,10 +31,8 @@ def call(body)
 				else
 				{
 				 	sh """
-						${M3_HOME}/bin/mvn clean install
+						${M3_HOME}/bin/mvn ${mvnGoals}
 					"""
-					jacoco()
-					junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: 'target/surefire-reports/*.xml'
 				}
 			}
 			// def SONAR_TOOL = tool 'SonarScanner'
