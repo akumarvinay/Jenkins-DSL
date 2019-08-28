@@ -93,11 +93,11 @@ def call(body)
 				}
 			}
 		}
-		catch()
+		catch (Exception err)
 		{			
-            echo 'Something failed, I should sound the klaxons!'
+            		echo 'Something failed, I should sound the klaxons!'
 			currentBuild.result = 'FAILURE'
-            throw
+            		throw
 		}
 		finally
 		{
