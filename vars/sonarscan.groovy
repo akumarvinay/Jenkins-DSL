@@ -17,7 +17,8 @@ def call(body)
 		          -Dsonar.projectName=${projectName} \
 				  -Dsonar.projectVersion=${projectVersion} \
 				  -Dsonar.sources=${sonarSources} \
-				  -Dsonar.language=${sonarLanguage}
+				  -Dsonar.language=${sonarLanguage} \
+				  -Dsonar.java.binaries=target/classes 
 		"""
     }
 }
