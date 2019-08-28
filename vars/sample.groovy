@@ -50,6 +50,7 @@ def call(body)
 		}
 		stage("DockerBuild and Publish")
 		{
+			applicationName = config.applicationName
 			docker.withRegistry('', 'DockerCred')
 			{
 				docker.withTool("docker")
