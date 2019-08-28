@@ -105,7 +105,7 @@ def call(body)
 				sh """
 				 echo "RESULT: ${currentBuild.result}"
 				"""
-				emailext body: 'Test', subject: 'Test Email', to: 'akuamarvinay@gmail.com'
+				emailext body: 'Test', subject: 'Test Email', to: 'akumarvinay@gmail.com'
 			}
 		}
 	}
