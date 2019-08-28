@@ -9,3 +9,4 @@ Pipeline Basic Steps:
 
 Example for Junit:
 https://www.mkyong.com/maven/jacoco-java-code-coverage-maven-example/
+https://github.com/LableOrg/java-maven-junit-helloworld
