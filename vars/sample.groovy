@@ -20,11 +20,22 @@ def call(body)
 			def M3_HOME = tool 'M3_HOME'
 			stage("Build")
 			{
-				sh """
-				${M3_HOME}/bin/mvn ${mvnGoals}
-				"""
-				jacoco()
-				junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: 'target/surefire-reports/*.xml'
+				if ("${BRANCH_NAME}" == 'master')
+				{
+					sh """
+						${M3_HOME}/bin/mvn ${mvnGoals}
+					"""
+					jacoco()
+					junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: 'target/surefire-reports/*.xml'
+				}
+				else
+				{
+				 	sh """
+						${M3_HOME}/bin/mvn clean install
+					"""
+					jacoco()
+					junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: 'target/surefire-reports/*.xml'
+				}
 			}
 			// def SONAR_TOOL = tool 'SonarScanner'
 			stage("Sonar Scan")
