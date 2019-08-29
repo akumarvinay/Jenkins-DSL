@@ -27,13 +27,12 @@ def call(body)
 					"""
 					jacoco()
 					junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: 'target/surefire-reports/*.xml'
-					publishHTML([allowMissing: false,
-     						alwaysLinkToLastBuild: true,
-     						keepAll: true,
-     						reportDir: 'target/jacoco-ut/',
-     						reportFiles: 'index.html',
-     						reportName: 'TestCase HTML Reports'
-     					])
+					HTMLPublisher
+					{
+						reportDir = config.reportDir
+						reportFiles = config.reportFiles
+						reportName = config.reportName
+					}
 				}
 				else
 				{
