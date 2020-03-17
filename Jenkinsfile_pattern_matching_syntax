@@ -1,0 +1,14 @@
+node('master')
+{
+    def branchName = "release-R4300"
+    if(("${branchName}" ==~ "^Develop-R[0-9]+\$") || ("${branchName}" ==~ "^Release-R[0-9]+\$"))
+    {
+        sh """
+        echo "I'm inside loop"
+        """
+    }
+    else
+    {
+        echo "Validation is correct"
+    }
+}
